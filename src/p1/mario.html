@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Mini Mario Game</title>
+
+<style>
+body{
+    margin:0;
+    background:#5c94fc;
+    text-align:center;
+}
+
+canvas{
+    background:#5c94fc;
+    display:block;
+    margin:auto;
+}
+</style>
+
+</head>
+
+<body>
+
+<h2 style="color:white;">Mini Mario Game - M. Rajif Dauta Abimanyu</h2>
+
+<canvas id="game" width="800" height="400"></canvas>
+
+<script>
+
+const canvas = document.getElementById("game")
+const ctx = canvas.getContext("2d")
+
+// karakter
+let player = {
+    x:100,
+    y:300,
+    width:40,
+    height:40,
+    dx:0,
+    dy:0,
+    gravity:0.6,
+    jump:-12
+}
+
+// tanah
+let ground = {
+    x:0,
+    y:350,
+    width:800,
+    height:50
+}
+
+// kontrol keyboard
+let keys = {}
+
+document.addEventListener("keydown",(e)=>{
+    keys[e.key] = true
+})
+
+document.addEventListener("keyup",(e)=>{
+    keys[e.key] = false
+})
+
+// update game
+function update(){
+
+    // gerak kiri kanan
+    if(keys["ArrowRight"]){
+        player.dx = 5
+    }
+    else if(keys["ArrowLeft"]){
+        player.dx = -5
+    }
+    else{
+        player.dx = 0
+    }
+
+    // lompat
+    if(keys[" "] && player.y + player.height >= ground.y){
+        player.dy = player.jump
+    }
+
+    // gravitasi
+    player.dy += player.gravity
+
+    player.x += player.dx
+    player.y += player.dy
+
+    // collision tanah
+    if(player.y + player.height > ground.y){
+        player.y = ground.y - player.height
+        player.dy = 0
+    }
+
+}
+
+// render
+function draw(){
+
+    ctx.clearRect(0,0,canvas.width,canvas.height)
+
+    // tanah
+    ctx.fillStyle = "green"
+    ctx.fillRect(ground.x,ground.y,ground.width,ground.height)
+
+    // player (mario sederhana)
+    ctx.fillStyle = "red"
+    ctx.fillRect(player.x,player.y,player.width,player.height)
+
+}
+
+// game loop
+function gameLoop(){
+
+    update()
+    draw()
+
+    requestAnimationFrame(gameLoop)
+
+}
+
+gameLoop()
+
+</script>
+
+</body>
+</html>
